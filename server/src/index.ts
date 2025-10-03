@@ -1,6 +1,7 @@
 // ✅ Services actifs pour le test
 export * from './utils/authWorkspace';
 export * from './services/textService';
+export * from './services/commentService';
 
 // 🔧 DEMO - Services désactivés (non nécessaires pour le test)
 // export * from './services/oauthService';

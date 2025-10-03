@@ -28,6 +28,12 @@ const MOCK_WORKSPACE_TOKENS: WorkspaceTokenMap = {
   }
 };
 
+// ========================== CACHE EN MÉMOIRE POUR MODE DEMO ==========================
+
+// Cache pour stocker les textes et commentaires créés en mode DEMO
+let inMemoryTexts: any[] = [];
+let inMemoryComments: any[] = [];
+
 // ========================== FONCTIONS FANTÔMES ==========================
 
 /**
@@ -106,9 +112,9 @@ async function callFirebaseFunction<T>(
   
   switch (functionName) {
     case 'getTexts':
-      // Simuler une liste de textes
-      responseData = {
-        texts: [
+      // Initialiser le cache si vide (première fois)
+      if (inMemoryTexts.length === 0) {
+        inMemoryTexts = [
           {
             id: 'text-demo-1',
             workspace_id: data?.workspaceId || 'demo-workspace-123',
@@ -127,27 +133,34 @@ async function callFirebaseFunction<T>(
             created_at: new Date(),
             updated_at: new Date()
           }
-        ]
+        ];
+      }
+      // Retourner les textes du cache
+      responseData = {
+        texts: [...inMemoryTexts]
       };
       break;
       
     case 'createText':
-      // Simuler la création d'un texte
+      // Créer et ajouter le texte au cache
+      const newText = {
+        id: `text-${Date.now()}`,
+        workspace_id: data?.workspaceId || 'demo-workspace-123',
+        title: data?.title || 'Sans titre',
+        content: data?.content || '',
+        created_by: 'demo-user-123',
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+      inMemoryTexts.unshift(newText); // Ajouter au début
       responseData = {
-        text: {
-          id: `text-${Date.now()}`,
-          workspace_id: data?.workspaceId || 'demo-workspace-123',
-          title: data?.title || 'Sans titre',
-          content: data?.content || '',
-          created_by: 'demo-user-123',
-          created_at: new Date(),
-          updated_at: new Date()
-        }
+        text: newText
       };
       break;
       
     case 'deleteText':
-      // Simuler la suppression
+      // Supprimer du cache
+      inMemoryTexts = inMemoryTexts.filter(t => t.id !== data?.textId);
       responseData = {
         deleted: true
       };
@@ -165,6 +178,79 @@ async function callFirebaseFunction<T>(
           created_at: new Date(Date.now() - 86400000),
           updated_at: new Date()
         }
+      };
+      break;
+      
+    // =============== COMMENTAIRES (PARTIE 2) ===============
+      
+    case 'getComments':
+      // Initialiser le cache si vide (première fois)
+      if (inMemoryComments.length === 0) {
+        inMemoryComments = [
+          {
+            id: 'comment-demo-1',
+            workspace_id: data?.workspaceId || 'demo-workspace-123',
+            text_id: 'text-demo-1',
+            content: 'Excellent article ! Très instructif.',
+            author: 'Alice Martin',
+            created_by: 'demo-user-123',
+            created_at: new Date(Date.now() - 7200000), // Il y a 2h
+            updated_at: new Date(Date.now() - 7200000)
+          },
+          {
+            id: 'comment-demo-2',
+            workspace_id: data?.workspaceId || 'demo-workspace-123',
+            text_id: 'text-demo-1',
+            content: 'Merci pour ces explications claires !',
+            author: 'Bob Dupont',
+            created_by: 'demo-user-123',
+            created_at: new Date(Date.now() - 3600000), // Il y a 1h
+            updated_at: new Date(Date.now() - 3600000)
+          },
+          {
+            id: 'comment-demo-3',
+            workspace_id: data?.workspaceId || 'demo-workspace-123',
+            text_id: 'text-demo-2',
+            content: 'Très bon exemple d\'architecture !',
+            author: 'Claire Bernard',
+            created_by: 'demo-user-123',
+            created_at: new Date(Date.now() - 1800000), // Il y a 30min
+            updated_at: new Date(Date.now() - 1800000)
+          }
+        ];
+      }
+      
+      // Filtrer par text_id si fourni
+      responseData = {
+        comments: data?.text_id 
+          ? inMemoryComments.filter(c => c.text_id === data.text_id)
+          : [...inMemoryComments]
+      };
+      break;
+      
+    case 'createComment':
+      // Créer et ajouter le commentaire au cache
+      const newComment = {
+        id: `comment-${Date.now()}`,
+        workspace_id: data?.workspaceId || 'demo-workspace-123',
+        text_id: data?.text_id || 'text-demo-1',
+        content: data?.content || '',
+        author: data?.author || 'Anonyme',
+        created_by: 'demo-user-123',
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+      inMemoryComments.unshift(newComment); // Ajouter au début
+      responseData = {
+        comment: newComment
+      };
+      break;
+      
+    case 'deleteComment':
+      // Supprimer du cache
+      inMemoryComments = inMemoryComments.filter(c => c.id !== data?.commentId);
+      responseData = {
+        deleted: true
       };
       break;
       
