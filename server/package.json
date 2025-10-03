@@ -2,12 +2,12 @@
   "name": "server",
   "scripts": {
     "lint": "exit 0",
-    "build": "tsc --noEmit --strict && echo 'Build TypeScript check'",
-    "build:watch": "echo 'Build watch simulé' && exit 0",
-    "shell": "echo 'Shell simulé' && exit 0",
-    "start": "echo 'Start simulé' && exit 0",
+    "build": "node init && tsc --noEmit --strict && echo 'Build TypeScript check'",
+    "build:watch": "node init && echo 'Build watch simul\u00e9' && exit 0",
+    "shell": "echo 'Shell simul\u00e9' && exit 0",
+    "start": "node init && echo 'Start simul\u00e9' && exit 0",
     "deploy": "bash ../scripts/deploy.sh",
-    "dev": "bash ../scripts/deploy.sh"
+    "dev": "node init && bash ../scripts/deploy.sh"
   },
   "engines": {
     "node": "22"

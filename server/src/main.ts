@@ -18,7 +18,7 @@ export const auth = getAuth(app);
 //configuration pour us-central1 le mode développement
 // car celui-ci marche uniquement aux us-central1
 setGlobalOptions({
-  region: "us-central",
+  region: "us-central1",
   concurrency: 1,
 });
 
