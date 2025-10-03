@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext';
-import { TextService, TextType, CreateTextRequest } from '@/services/api/textService';
+import { TextService, CreateTextRequest } from '@/services/api/textService';
+import type { TextType } from '../../shared/types';
 import { queryKeys } from '@/query/queryKeys';
 
 /**
@@ -24,10 +25,8 @@ export function useTexts() {
 
   // ✅ Mutation création avec gestion cache
   const createMutation = useMutation({
-    mutationFn: (data: CreateTextRequest) => {
-      const textService = new TextService();
-      return textService.createText(currentWorkspaceId, data);
-    },
+    mutationFn: (data: CreateTextRequest) => 
+      TextService.createText(currentWorkspaceId, data),
     onSuccess: (newText) => {
       // Ajouter le nouveau texte au cache
       queryClient.setQueryData<TextType[]>(

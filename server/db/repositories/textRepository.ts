@@ -1,26 +1,11 @@
 import { Pool } from 'pg';
 import { getPool } from '../config.js';
+import type { TextType, CreateTextType } from '../../../shared/types.js';
 
 /**
  * Repository pour la gestion des textes
- * 🔧 VERSION DEMO - Repository de test pour les textes
+ * ✅ Respecte les patterns Agentova : types depuis shared/types.ts
  */
-
-export interface TextType {
-  id: string;
-  workspace_id: string;
-  title: string;
-  content: string;
-  created_by: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface CreateTextType {
-  title: string;
-  content: string;
-  created_by: string;
-}
 
 export class TextRepository {
   private pool: Pool;

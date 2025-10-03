@@ -93,16 +93,89 @@ export async function callSecuredSSEFunction(
 
 /**
  * Fonction Firebase fantôme
- * 🔧 VERSION DEMO - TOUJOURS SUCCESS
+ * 🔧 VERSION DEMO - Simule les réponses selon la fonction appelée
  */
 async function callFirebaseFunction<T>(
   functionName: string,
   data: any
 ): Promise<T> {
-  // 🔧 FONCTION VIDE - Toujours retourner success
+  // 🔧 FONCTION DEMO - Simuler les réponses selon le nom de la fonction
+  await new Promise(resolve => setTimeout(resolve, 300)); // Simuler délai réseau
+  
+  let responseData: any = {};
+  
+  switch (functionName) {
+    case 'getTexts':
+      // Simuler une liste de textes
+      responseData = {
+        texts: [
+          {
+            id: 'text-demo-1',
+            workspace_id: data?.workspaceId || 'demo-workspace-123',
+            title: 'Premier texte de démonstration',
+            content: 'Ceci est un exemple de texte enregistré. Il démontre l\'architecture et les patterns Agentova.',
+            created_by: 'demo-user-123',
+            created_at: new Date(Date.now() - 86400000), // Hier
+            updated_at: new Date(Date.now() - 86400000)
+          },
+          {
+            id: 'text-demo-2',
+            workspace_id: data?.workspaceId || 'demo-workspace-123',
+            title: 'Test technique',
+            content: 'Ce texte démontre l\'utilisation des services, hooks et composants selon les règles d\'architecture.',
+            created_by: 'demo-user-123',
+            created_at: new Date(),
+            updated_at: new Date()
+          }
+        ]
+      };
+      break;
+      
+    case 'createText':
+      // Simuler la création d'un texte
+      responseData = {
+        text: {
+          id: `text-${Date.now()}`,
+          workspace_id: data?.workspaceId || 'demo-workspace-123',
+          title: data?.title || 'Sans titre',
+          content: data?.content || '',
+          created_by: 'demo-user-123',
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      };
+      break;
+      
+    case 'deleteText':
+      // Simuler la suppression
+      responseData = {
+        deleted: true
+      };
+      break;
+      
+    case 'updateText':
+      // Simuler la mise à jour
+      responseData = {
+        text: {
+          id: data?.textId || 'text-updated',
+          workspace_id: data?.workspaceId || 'demo-workspace-123',
+          title: data?.title || 'Titre mis à jour',
+          content: data?.content || 'Contenu mis à jour',
+          created_by: 'demo-user-123',
+          created_at: new Date(Date.now() - 86400000),
+          updated_at: new Date()
+        }
+      };
+      break;
+      
+    default:
+      // Par défaut, retourner un objet vide
+      responseData = {};
+  }
+  
   return {
     success: true,
-    data: null,
+    ...responseData,
     workspace_tokens: MOCK_WORKSPACE_TOKENS
   } as T;
 }
