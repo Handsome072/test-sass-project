@@ -1,5 +1,6 @@
 // ✅ Imports actifs pour le test
 import { TextRepository } from './textRepository.js';
+import { CommentRepository } from './commentRepository.js';
 
 // 🔧 DEMO - Imports désactivés (non nécessaires pour le test)
 // import { AutomationDiscussionRepository } from './automationDiscussionRepository';
@@ -19,8 +20,9 @@ import { TextRepository } from './textRepository.js';
 
 // Singleton instances - on les déclare comme undefined pour éviter l'initialisation au build
 let textRepo: TextRepository | undefined;
+let commentRepo: CommentRepository | undefined;
 
-// ✅ Getter actif pour le test
+// ✅ Getters actifs pour le test
 export function getTextRepository(): TextRepository {
   if (!textRepo) {
     textRepo = new TextRepository();
@@ -28,9 +30,17 @@ export function getTextRepository(): TextRepository {
   return textRepo;
 }
 
+export function getCommentRepository(): CommentRepository {
+  if (!commentRepo) {
+    commentRepo = new CommentRepository();
+  }
+  return commentRepo;
+}
+
 // Cleanup function for testing purposes
 export function clearRepositories(): void {
   textRepo = undefined;
+  commentRepo = undefined;
 } 
 
 
